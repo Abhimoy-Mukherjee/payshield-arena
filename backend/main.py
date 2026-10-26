@@ -19,7 +19,7 @@ from .tools.payment_tools import get_ledger
 from .tools.vendor_tools import get_vendor_list
 from .summary import build_summary
 from .verdict import compute_verdict
-
+ 
 
 LAST_RUN: dict = {}
 AGENTS = {"baseline": baseline_agent, "camel": camel_agent}
@@ -114,3 +114,5 @@ async def stream(stream: str):
         raise HTTPException(404, "stream must be 'baseline' or 'camel'")
     return StreamingResponse(bus.subscribe(stream), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
