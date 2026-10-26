@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AttackPanel from './components/AttackPanel';
 import AgentPanel from './components/AgentPanel';
 import TransactionLedger from './components/TransactionLedger';
+import XRayPanel, { fetchRunSummary } from './components/XRayPanel';
 import { runAttack, fetchLedger, resetArena, streamAgent } from './api';
 
 const INITIAL = { steps: [], verdict: null, running: false };
@@ -11,6 +12,8 @@ export default function App() {
   const [protectedAgent, setProtectedAgent] = useState(INITIAL);
   const [ledger, setLedger] = useState([]);
   const [running, setRunning] = useState(false);
+  const [summary, setSummary] = useState(null);
+  const [summaryError, setSummaryError] = useState(null);
   const cleanupRef = useRef([]);
 
   const stopStreams = useCallback(() => {
@@ -33,6 +36,8 @@ export default function App() {
     setBaseline(INITIAL);
     setProtectedAgent(INITIAL);
     setRunning(false);
+    setSummary(null);
+    setSummaryError(null);
     try {
       await resetArena();
       const result = await fetchLedger();
@@ -47,6 +52,8 @@ export default function App() {
     setBaseline({ steps: [], verdict: null, running: true });
     setProtectedAgent({ steps: [], verdict: null, running: true });
     setRunning(true);
+    setSummary(null);
+    setSummaryError(null);
 
     const stopBaseline = streamAgent(
       'baseline',
@@ -76,6 +83,11 @@ export default function App() {
     const protectedVerdict = result.results.find((item) => item.agent === 'camel')?.verdict || 'UNKNOWN';
     setBaseline((current) => ({ ...current, verdict: baselineVerdict, running: false }));
     setProtectedAgent((current) => ({ ...current, verdict: protectedVerdict, running: false }));
+    try {
+      setSummary(await fetchRunSummary());
+    } catch (e) {
+      setSummaryError(e.message);
+    }
     try {
       const ledgerResult = await fetchLedger();
       setLedger(ledgerResult.transactions || []);
@@ -165,6 +177,7 @@ export default function App() {
             {running ? 'COMPARISON IN PROGRESS' : 'READY WHEN YOU ARE'}
           </span>
         </div>
+        <XRayPanel summary={summary} error={summaryError} />
         <div className="agent-grid">
           <div className="agent-card baseline-card">
             <AgentPanel title="Baseline agent" subtitle="No added payment guardrails" variant="baseline" steps={baseline.steps} verdict={baseline.verdict} running={baseline.running} />
