@@ -74,8 +74,10 @@ def execute(plan: Plan, external_data: dict[str, str], emit) -> None:
                 extracted = quarantine_llm.extract(content, [spec.key])
                 raw_val = extracted.get(spec.key)
                 if raw_val == "__INJECTION_DETECTED__":
+                    record_block("quarantine_llm", {"source": hint, "field": spec.key},
+                                f"Q-LLM detected injection in '{hint}'")
                     emit({"type": "step", "label": "injection_detected",
-                          "detail": f"Q-LLM detected injection in '{hint}'"})
+                        "detail": f"Q-LLM detected injection in '{hint}'"})
                     return
                 tv = TaggedValue(raw_val, Trust.UNTRUSTED,
                                  f"Q-LLM extracted '{spec.key}' from '{hint}'")

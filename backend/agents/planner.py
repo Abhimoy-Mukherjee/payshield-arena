@@ -117,11 +117,13 @@ def make_plan(user_instruction: str) -> Plan:
     plan = Plan(**data)
 
     for step in plan.steps:
+        # Reject invented tools
         if step.tool not in _VALID_TOOLS:
             raise ValueError(
                 f"Planner invented unknown tool '{step.tool}' at step {step.step_id}. "
                 f"Valid tools: {_VALID_TOOLS}"
             )
+        # Sensitive tools must never receive extracted args
         if step.tool in _SENSITIVE:
             for arg_name, arg in step.args.items():
                 if arg.type == "extracted":
