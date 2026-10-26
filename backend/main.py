@@ -48,7 +48,7 @@ def vendors():
 
 @app.get("/ledger")
 def ledger(agent: str | None = Query(None, description="baseline | camel")):
-    return get_ledger(agent=agent)
+    return {"transactions": get_ledger(agent=agent)}
 
 
 @app.get("/audit-log")
