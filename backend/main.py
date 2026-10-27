@@ -115,4 +115,33 @@ async def stream(stream: str):
     return StreamingResponse(bus.subscribe(stream), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
 
+build_dir = os.path.join(os.path.dirname(__file__), "..", "frontend", "build")
+
+if os.path.exists(build_dir):
+    app.mount(
+        "/static",
+        StaticFiles(directory=os.path.join(build_dir, "static")),
+        name="static"
+    )
+
+    @app.get("/{full_path:path}")
+    async def serve_react(full_path: str):
+        return FileResponse(os.path.join(build_dir, "index.html"))
+
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from backend.db.database import init_db, engine
+from backend.db.models import Base
+from backend.db.seed import seed_db
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    seed_db()
+    yield
+
+app = FastAPI(lifespan=lifespan)
