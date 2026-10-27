@@ -9,4 +9,3 @@ python-dotenv
 httpx
 pytest
 pypdf
-render>=1.0.1
