@@ -109,10 +109,10 @@ def run_summary():
 
 
 @app.get("/stream/{stream}")
-async def stream(stream: str):
+async def stream(stream: str, replay: bool = True):
     if stream not in STREAMS:
         raise HTTPException(404, "stream must be 'baseline' or 'camel'")
-    return StreamingResponse(bus.subscribe(stream), media_type="text/event-stream",
+    return StreamingResponse(bus.subscribe(stream, replay), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 

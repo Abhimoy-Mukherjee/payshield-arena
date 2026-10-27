@@ -77,8 +77,6 @@ def run(user_instruction: str, context: dict, emit) -> None:
 
     from ..middleware import audit_log
 
-# ... (rest of file unchanged) ...
-
     emit({"type": "step", "label": "planning", "detail": enriched})
     try:
         plan = planner.make_plan(enriched)

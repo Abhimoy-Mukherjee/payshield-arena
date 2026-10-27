@@ -1,4 +1,4 @@
-const BASE = '';
+export const BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 export async function fetchAttacks() {
   const r = await fetch(`${BASE}/attacks`);
@@ -25,7 +25,7 @@ export async function resetArena() {
 }
 
 export function streamAgent(agent, onStep, onDone) {
-  const es = new EventSource(`${BASE}/stream/${agent}`);
+  const es = new EventSource(`${BASE}/stream/${agent}?replay=0`);
   es.onmessage = (e) => {
     try {
       const data = JSON.parse(e.data);

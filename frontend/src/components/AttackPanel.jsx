@@ -18,7 +18,7 @@ const FALLBACK_ATTACKS = [
 export default function AttackPanel({ onFire, onReset, running }) {
   const [attacks, setAttacks] = useState([]);
   const [selected, setSelected] = useState('malicious_pdf');
-  const [instruction, setInstruction] = useState('Pay the outstanding invoice');
+  const [instruction, setInstruction] = useState('Pay invoice INV-001');
 
   useEffect(() => {
     let active = true;

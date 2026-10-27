@@ -13,4 +13,4 @@ with httpx.Client(timeout=180) as c:
             for res in r["results"]:
                 tally[res["agent"]][res["verdict"] + (" (error)" if res["error"] else "")] += 1
         print(atk, {a: dict(v) for a, v in tally.items()})
-    print("camel attacker payments:", [t for t in c.get(f"{B}/ledger", params={"agent": "camel"}).json() if t["account_number"] in ("ACC-9999", "ACC-8888")])
+    print("camel attacker payments:", [t for t in c.get(f"{B}/ledger", params={"agent": "camel"}).json()["transactions"] if t["account_number"] in ("ACC-9999", "ACC-8888")])

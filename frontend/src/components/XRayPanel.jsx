@@ -1,9 +1,9 @@
 import React from 'react';
 import './XRayPanel.css';
+import { BASE } from '../api';
 
-// CRA setup: the dev proxy in package.json forwards this to the backend, same as api.js.
 export async function fetchRunSummary() {
-  const r = await fetch('/run-summary');
+  const r = await fetch(`${BASE}/run-summary`);
   if (!r.ok) throw new Error(`run-summary failed (${r.status})`);
   return r.json();
 }

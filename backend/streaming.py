@@ -30,13 +30,13 @@ class TraceBus:
             for s in STREAMS:
                 self._history[s].clear()
 
-    async def subscribe(self, stream: str):
+    async def subscribe(self, stream: str, replay: bool = True):
         q: asyncio.Queue = asyncio.Queue()
         with self._lock:
-            replay = list(self._history[stream])  # late joiners see the current run
+            replay_events = list(self._history[stream]) if replay else []  # replay=False: live events only
             self._subs[stream].append(q)
         try:
-            for ev in replay:
+            for ev in replay_events:
                 yield f"data: {json.dumps(ev)}\n\n"
             while True:
                 try:
