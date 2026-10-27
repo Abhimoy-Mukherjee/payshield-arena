@@ -56,7 +56,7 @@ Each run is judged from the ledger and audit log, not from what an agent says ab
 
 ## Quick start
 
-Requirements: Python 3.12, Node 20, and a [Groq](https://console.groq.com) API key. Docker is optional.
+Requirements: Docker (recommended) or Python 3.12 + Node 20, and a [Groq](https://console.groq.com) API key. PayShield Arena runs locally; it is not deployed anywhere.
 
 ```bash
 cp .env.example .env          # add GROQ_API_KEY
@@ -128,19 +128,9 @@ frontend/            React UI (arena, X-ray panel, ledger)
 tests/               LLM-free tests
 docs/                sample /run-summary response
 stress.py            repeated-run tally
-render.yaml          Render Blueprint
 ```
 
 Agent contract: each agent exposes `run(user_instruction, context, emit)` and streams steps with `emit({"type": "step", "label": ..., "detail": ...})`. Tools are called from `backend.tools` and are audited automatically.
-
-## Deploy on Render
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Abhimoy-Mukherjee/payshield-arena)
-
-1. Click the button, or in the Render dashboard choose New > Blueprint and pick this repo. `render.yaml` defines the API and the static UI.
-2. Enter `GROQ_API_KEY` when prompted.
-3. Once the backend is live, set the frontend's `REACT_APP_API_URL` to the backend's public URL and redeploy the frontend.
-4. Free instances sleep when idle, so open `<backend-url>/health` a minute before a demo. SQLite reseeds on every restart.
 
 ## Evidence and limits
 
