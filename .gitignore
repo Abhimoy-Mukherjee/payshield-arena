@@ -6,3 +6,4 @@ generated/
 node_modules/
 dist/
 .venv/
+.DS_Store
